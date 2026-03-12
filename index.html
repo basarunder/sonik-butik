@@ -178,6 +178,14 @@
             { t: "Başar Ünder Diving (Live Excerpt)", id: "VGE1jFYU-xo", p: "yt" }
         ];
 
+        const HELP_MENU_DATA = [
+            { cmd: 'works', desc: 'View the interactive portfolio grid' },
+            { cmd: 'about', desc: 'Learn about Başar Ünder & Sonik Butik' },
+            { cmd: 'contact', desc: 'Get in touch via email/social' },
+            { cmd: 'synth', desc: 'Play a generative audio jam' },
+            { cmd: 'clear', desc: 'Clear terminal output' }
+        ];
+
         const VideoCard = ({ video }) => {
             const [thumb, setThumb] = useState(video.p === 'yt' ? `https://img.youtube.com/vi/${video.id}/hqdefault.jpg` : '');
             
@@ -207,7 +215,7 @@
             );
         };
 
-        const TerminalText = ({ line }) => {
+        const TerminalText = ({ line, onCommand }) => {
             const { type, text, data } = line;
 
             const escapeHtml = (unsafe) => {
@@ -227,6 +235,28 @@
                 <div className="my-1 flex">
                     <span className="text-emerald-500 font-bold mr-2 whitespace-nowrap">guest@sonik-butik:~$</span>
                     <span className="text-gray-200 break-words">{text}</span>
+                </div>
+                );
+            }
+
+            if (type === 'menu') {
+                return (
+                <div className="my-4 border border-[#222] bg-[#0a0a0a] p-4 rounded shadow-lg max-w-2xl">
+                    <div className="text-gray-500 mb-3 text-xs uppercase tracking-widest font-bold border-b border-[#222] pb-2">
+                    /// Quick Navigation (Click or Type)
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+                    {data.map(c => (
+                        <button 
+                        key={c.cmd}
+                        onClick={() => onCommand(c.cmd)}
+                        className="text-left flex items-start p-2 hover:bg-[#111] rounded transition-colors group border border-transparent hover:border-[#333]"
+                        >
+                        <span className="text-emerald-400 font-bold w-24 group-hover:text-emerald-300 shrink-0">$&gt; {c.cmd}</span>
+                        <span className="text-gray-400 text-sm flex-1">{c.desc}</span>
+                        </button>
+                    ))}
+                    </div>
                 </div>
                 );
             }
@@ -319,11 +349,7 @@
                             setLines(prev => [
                                 ...prev, 
                                 { id: generateId(), type: 'input', text: 'help' },
-                                {
-                                    id: generateId(),
-                                    type: 'output',
-                                    text: `Available commands:\n  help    - Show this message\n  about   - Learn about Başar Ünder & Sonik Butik\n  works   - View the interactive portfolio grid\n  contact - Get in touch via email/social\n  clear   - Clear terminal output (or Ctrl+L)`
-                                }
+                                { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
                             ]);
                         }, 500);
                     }
@@ -348,11 +374,7 @@
                 if (lowerCmd === 'clear') { setLines([]); return; }
 
                 if (lowerCmd === 'help') {
-                setLines(prev => [...prev, {
-                    id: generateId(),
-                    type: 'output',
-                    text: `Available commands:\n  help    - Show this message\n  about   - Learn about Başar Ünder & Sonik Butik\n  works   - View the interactive portfolio grid\n  contact - Get in touch via email/social\n  clear   - Clear terminal output (or Ctrl+L)`
-                }]);
+                setLines(prev => [...prev, { id: generateId(), type: 'menu', data: HELP_MENU_DATA }]);
                 return;
                 }
 
@@ -430,7 +452,7 @@
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50 opacity-[0.15]"></div>
                 
                 <div className="flex-1 overflow-y-auto pb-8 scrollbar-hide z-10 w-full">
-                    {lines.map(line => <TerminalText key={line.id} line={line} />)}
+                    {lines.map(line => <TerminalText key={line.id} line={line} onCommand={handleCommand} />)}
 
                     {!isBooting && (
                     <form onSubmit={e => { e.preventDefault(); handleCommand(input); setInput(''); }} className="flex items-start sm:items-center mt-2">
@@ -442,7 +464,7 @@
                         onChange={e => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         disabled={isBooting}
-                        placeholder="Type 'help' to see available commands..."
+                        placeholder="Type a command or click an option above..."
                         className="flex-1 bg-transparent border-none outline-none text-gray-200 font-mono caret-emerald-500 w-full min-w-0 placeholder:text-gray-700 placeholder:italic"
                         autoComplete="off" spellCheck="false" autoFocus
                         />
