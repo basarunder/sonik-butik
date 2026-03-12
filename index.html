@@ -163,7 +163,6 @@
             { t: "iSlash Multiplayer Trailer", id: "YeRu3n-dEx0", p: "yt" },
             { t: "iSlash Android Available Now", id: "uBv8y6DyuO0", p: "yt" },
             { t: "iSlash Opening Theme", id: "o8QlvMRpmw8", p: "yt" },
-            { t: "ikas Hızında E-Ticaret Nedir?", id: "9Hg3t9UuqdI", p: "yt" },
             { t: "Roland AIRA ve V-Drums / Performans", id: "KlDwrzC-sBw", p: "yt" },
             { t: "Oyunda Müzik | Başar Ünder", id: "wKTgIDN7Mdo", p: "yt" },
             { t: "Bilgisayar Oyunlarında Müzik ve Ses Tasarımı | IKSV", id: "TXLieZnUVpE", p: "yt" },
@@ -335,7 +334,7 @@
                 "Loading Sonik Butik Modules... [OK]",
                 "Establishing uplink to Başar Ünder's Archive... [OK]",
                 " ",
-                "Welcome to Sonik Butik OS. Type 'help' for a list of local commands.",
+                "Welcome to Sonik Butik OS.",
                 "System is ready."
                 ];
 
@@ -350,7 +349,6 @@
                         setTimeout(() => {
                             setLines(prev => [
                                 ...prev, 
-                                { id: generateId(), type: 'input', text: 'help' },
                                 { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
                             ]);
                         }, 500);
@@ -367,65 +365,88 @@
                 return;
                 }
 
+                // Ekrandaki menü komutlardan önce girilen girdiyi yansıt
                 setLines(prev => [...prev, { id: generateId(), type: 'input', text: trimmedCmd }]);
                 setCommandHistory(prev => [...prev, trimmedCmd]);
                 setHistoryIndex(-1);
 
                 const lowerCmd = trimmedCmd.toLowerCase();
 
-                if (lowerCmd === 'clear') { setLines([]); return; }
+                // "clear" komutu ekranı temizler ama hemen taptaze bir menü bırakır
+                if (lowerCmd === 'clear') { 
+                    setLines([{ id: generateId(), type: 'menu', data: HELP_MENU_DATA }]); 
+                    return; 
+                }
 
                 if (lowerCmd === 'help') {
-                setLines(prev => [...prev, { id: generateId(), type: 'menu', data: HELP_MENU_DATA }]);
-                return;
+                    setLines(prev => [...prev, { id: generateId(), type: 'menu', data: HELP_MENU_DATA }]);
+                    return;
                 }
 
                 if (lowerCmd === 'about') {
-                setLines(prev => [...prev, { 
-                    id: generateId(), 
-                    type: 'output', 
-                    text: `**At Sonik Butik, our goal is to make you sound LOUD.**\n\nWe create immersive, flattering, contemporary audio for our clients, specializing in versatile styles for contemporary projects. Whether you want something fashion forward, timeless, or just for a special occasion, Sonik Butik has your answer.\n\nWe believe that we are good listeners. This is why we offer a full service experience including music production, sound design, recording, editing and audio post production services such as mixing and mastering for music, films, games, XR, animations, advertisements and stage.` 
-                }]);
-                return;
+                    setLines(prev => [
+                        ...prev, 
+                        { 
+                            id: generateId(), 
+                            type: 'output', 
+                            text: `**At Sonik Butik, our goal is to make you sound LOUD.**\n\nWe create immersive, flattering, contemporary audio for our clients, specializing in versatile styles for contemporary projects. Whether you want something fashion forward, timeless, or just for a special occasion, Sonik Butik has your answer.\n\nWe believe that we are good listeners. This is why we offer a full service experience including music production, sound design, recording, editing and audio post production services such as mixing and mastering for music, films, games, XR, animations, advertisements and stage.` 
+                        },
+                        { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
+                    ]);
+                    return;
                 }
 
                 if (lowerCmd === 'contact') {
-                setLines(prev => [...prev, { 
-                    id: generateId(), 
-                    type: 'output', 
-                    text: `Initiating secure comms...\n\n* Email: sonik@sonikbutik.com\n* Web:   https://sonikbutik.com\n* HQ:    Kolektif House Levent\n         Esentepe Mah. Talatpaşa Cad. 5\n         34394 Şişli/ İstanbul, Turkey` 
-                }]);
-                return;
+                    setLines(prev => [
+                        ...prev, 
+                        { 
+                            id: generateId(), 
+                            type: 'output', 
+                            text: `Initiating secure comms...\n\n* Email: sonik@sonikbutik.com\n* Web:   https://sonikbutik.com\n* HQ:    Kolektif House Levent\n         Esentepe Mah. Talatpaşa Cad. 5\n         34394 Şişli/ İstanbul, Turkey` 
+                        },
+                        { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
+                    ]);
+                    return;
                 }
 
                 if (lowerCmd === 'works' || lowerCmd === 'portfolio') {
-                setLines(prev => [
-                    ...prev, 
-                    { id: generateId(), type: 'output', text: `Loading Sonik Butik visual archive [2026 Edition]...` }, 
-                    { id: generateId(), type: 'works', data: PORTFOLIO_DATA }
-                ]);
-                return;
+                    setLines(prev => [
+                        ...prev, 
+                        { id: generateId(), type: 'output', text: `Loading Sonik Butik visual archive [2026 Edition]...` }, 
+                        { id: generateId(), type: 'works', data: PORTFOLIO_DATA },
+                        { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
+                    ]);
+                    return;
                 }
 
                 if (lowerCmd === 'synth' || lowerCmd === 'jam') {
-                playSynthJam();
-                setLines(prev => [...prev, { 
-                    id: generateId(), 
-                    type: 'output', 
-                    text: `Patching virtual cables...\nWarming up analog oscillators...\n[||||||||||||||||||||||||] 100%\n\n♪┏(・o･)┛♪┗ ( ･o･) ┓♪\n\n*bzzzt... wub wub wub... screech...*` 
-                }]);
-                return;
+                    playSynthJam();
+                    setLines(prev => [
+                        ...prev, 
+                        { 
+                            id: generateId(), 
+                            type: 'output', 
+                            text: `Patching virtual cables...\nWarming up analog oscillators...\n[||||||||||||||||||||||||] 100%\n\n♪┏(・o･)┛♪┗ ( ･o･) ┓♪\n\n*bzzzt... wub wub wub... screech...*` 
+                        },
+                        { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
+                    ]);
+                    return;
                 }
 
-                setLines(prev => [...prev, { 
-                    id: generateId(), 
-                    type: 'error', 
-                    text: `Command not found: ${trimmedCmd}. Type 'help' to see available commands.` 
-                }]);
+                // Bilinmeyen komutlar
+                setLines(prev => [
+                    ...prev, 
+                    { 
+                        id: generateId(), 
+                        type: 'error', 
+                        text: `Command not found: ${trimmedCmd}. Please click an option below:` 
+                    },
+                    { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
+                ]);
             };
 
             const handleKeyDown = (e) => {
-                if (e.ctrlKey && e.key === 'l') { e.preventDefault(); setLines([]); return; }
+                if (e.ctrlKey && e.key === 'l') { e.preventDefault(); setLines([{ id: generateId(), type: 'menu', data: HELP_MENU_DATA }]); return; }
                 if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 if (historyIndex < commandHistory.length - 1) {
