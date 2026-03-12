@@ -305,6 +305,7 @@
             const [lines, setLines] = useState([]);
             const [input, setInput] = useState('');
             const [isBooting, setIsBooting] = useState(true);
+            const [isMobile, setIsMobile] = useState(false);
             
             const [commandHistory, setCommandHistory] = useState([]);
             const [historyIndex, setHistoryIndex] = useState(-1);
@@ -312,8 +313,18 @@
             const bottomRef = useRef(null);
             const inputRef = useRef(null);
 
+            // Cihazın mobil/dokunmatik olup olmadığını tespit et
+            useEffect(() => {
+                const checkDevice = () => {
+                    setIsMobile(window.innerWidth < 768 || ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0));
+                };
+                checkDevice();
+                window.addEventListener('resize', checkDevice);
+                return () => window.removeEventListener('resize', checkDevice);
+            }, []);
+
             const handleContainerClick = () => {
-                if (!isBooting && inputRef.current) inputRef.current.focus();
+                if (!isBooting && inputRef.current && !isMobile) inputRef.current.focus();
             };
 
             useEffect(() => { 
@@ -323,8 +334,8 @@
             }, [lines]);
 
             useEffect(() => {
-                if (!isBooting && inputRef.current) inputRef.current.focus();
-            }, [isBooting]);
+                if (!isBooting && inputRef.current && !isMobile) inputRef.current.focus();
+            }, [isBooting, isMobile]);
 
             useEffect(() => {
                 const bootSequence = [
@@ -479,20 +490,29 @@
                     {lines.map(line => <TerminalText key={line.id} line={line} onCommand={handleCommand} />)}
 
                     {!isBooting && (
-                    <form onSubmit={e => { e.preventDefault(); handleCommand(input); setInput(''); }} className="flex items-start sm:items-center mt-2">
-                        <span className="text-emerald-500 font-bold mr-2 whitespace-nowrap mt-[2px] sm:mt-0">guest@sonik-butik:~$</span>
-                        <input
-                        ref={inputRef}
-                        type="text"
-                        value={input}
-                        onChange={e => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        disabled={isBooting}
-                        placeholder="Type a command or click an option above..."
-                        className="flex-1 bg-transparent border-none outline-none text-gray-200 font-mono caret-emerald-500 w-full min-w-0 placeholder:text-gray-700 placeholder:italic"
-                        autoComplete="off" spellCheck="false" autoFocus
-                        />
-                    </form>
+                        <div className="mt-2">
+                            {!isMobile ? (
+                                <form onSubmit={e => { e.preventDefault(); handleCommand(input); setInput(''); }} className="flex items-start sm:items-center">
+                                    <span className="text-emerald-500 font-bold mr-2 whitespace-nowrap mt-[2px] sm:mt-0">guest@sonik-butik:~$</span>
+                                    <input
+                                    ref={inputRef}
+                                    type="text"
+                                    value={input}
+                                    onChange={e => setInput(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    disabled={isBooting}
+                                    placeholder="Type a command or click an option above..."
+                                    className="flex-1 bg-transparent border-none outline-none text-gray-200 font-mono caret-emerald-500 w-full min-w-0 placeholder:text-gray-700 placeholder:italic"
+                                    autoComplete="off" spellCheck="false" autoFocus={!isMobile}
+                                    />
+                                </form>
+                            ) : (
+                                <div className="flex items-center">
+                                    <span className="text-emerald-500 font-bold mr-2 whitespace-nowrap">guest@sonik-butik:~$</span>
+                                    <span className="w-2 h-4 bg-emerald-500 animate-pulse inline-block"></span>
+                                </div>
+                            )}
+                        </div>
                     )}
                     <div ref={bottomRef} className="h-4" />
                 </div>
