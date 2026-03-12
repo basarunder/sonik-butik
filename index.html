@@ -99,8 +99,8 @@
             { t: "ikas - E-Ticaret Siteni Ücretsiz Aç!", id: "RHCNd-rK6-A", p: "yt" },
             { t: "ikas Hızında E-Ticaret Nedir?", id: "9Hg3t9UuqdI", p: "yt" },
             { t: "Kavur - Official Trailer", id: "809043270", p: "vm" },
-            { t: "BAŞAR ÜNDER ile Ses Tasarımı ve Oyun Müziği [Part 1]", id: "xcXtSZUlyfo", p: "yt" },
-            { t: "BAŞAR ÜNDER ile Ses Tasarımı ve Oyun Müziği [Part 2]", id: "oU5IdYOQZd4", p: "yt" },
+            { t: "BAŞAR ÜNDER ile Ses Tasarımı ve Oyun Müziği [Part 1]", id: "xcXtSZUlyfo", p: "yt" },
+            { t: "BAŞAR ÜNDER ile Ses Tasarımı ve Oyun Müziği [Part 2]", id: "oU5IdYOQZd4", p: "yt" },
             { t: "TEDxIstanbul müzik performans | Başar Ünder & Nedim Ruacan | TEDxIstanbul", id: "oy--ogE29aE", p: "yt" },
             { t: "That Long Moonless Chase - Trailer", id: "EPuLFP20B30", p: "yt" },
             { t: "That Long Moonless Chase - Trailer", id: "679636117", p: "vm" },
@@ -115,14 +115,13 @@
             { t: "Gece Yarısı Işığı", id: "1X3gd8RbdjA", p: "yt" },
             { t: "Dilan Onay - In Pulse", id: "Tdn4BVIlJxk", p: "yt" },
             { t: "CAN BAYRAK - DOLPHINS (Official Trailer)", id: "637440766", p: "vm" },
-            { t: "Audioban Space \\\ Stygian: Reign of the Old Ones \\\ Oyun Müziği ve Ses Tasarımı", id: "Y2Dtzjt1FHE", p: "yt" },
+            { t: "Audioban Space \\ Stygian: Reign of the Old Ones \\ Oyun Müziği ve Ses Tasarımı", id: "Y2Dtzjt1FHE", p: "yt" },
             { t: "equalization", id: "610184077", p: "vm" },
             { t: "eqho - Dark (Official Video)", id: "515198726", p: "vm" },
             { t: "DVAL - You", id: "Zdqdizp0gM4", p: "yt" },
             { t: "DVAL - When", id: "N6_00aZPJp0", p: "yt" },
             { t: "DVAL - Departures", id: "AveOFrpZ7E4", p: "yt" },
             { t: "Berkant Çelen \"Tortu\" Album Teaser", id: "IJjJ07EppyY", p: "yt" },
-            { t: "ikas - Kargo Desteğini Kap!", id: "RHCNd-rK6-A", p: "yt" },
             { t: "Sesam & Kümmel - Kurzfilm", id: "9TGje3mW2KA", p: "yt" },
             { t: "Bloody Lines (Experimental Music Documentary)", id: "296188284", p: "vm" },
             { t: "Vakıf Katılım - Mutluluklar", id: "253245386", p: "vm" },
@@ -321,7 +320,6 @@
             const bottomRef = useRef(null);
             const inputRef = useRef(null);
 
-            // Cihazın mobil/dokunmatik olup olmadığını tespit et
             useEffect(() => {
                 const checkDevice = () => {
                     setIsMobile(window.innerWidth < 768 || ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0));
@@ -369,6 +367,7 @@
                         setTimeout(() => {
                             setLines(prev => [
                                 ...prev, 
+                                { id: generateId(), type: 'input', text: 'help' },
                                 { id: generateId(), type: 'menu', data: HELP_MENU_DATA }
                             ]);
                         }, 500);
@@ -385,14 +384,12 @@
                 return;
                 }
 
-                // Ekrandaki menü komutlardan önce girilen girdiyi yansıt
                 setLines(prev => [...prev, { id: generateId(), type: 'input', text: trimmedCmd }]);
                 setCommandHistory(prev => [...prev, trimmedCmd]);
                 setHistoryIndex(-1);
 
                 const lowerCmd = trimmedCmd.toLowerCase();
 
-                // "clear" komutu ekranı temizler ama hemen taptaze bir menü bırakır
                 if (lowerCmd === 'clear') { 
                     setLines([{ id: generateId(), type: 'menu', data: HELP_MENU_DATA }]); 
                     return; 
@@ -453,7 +450,6 @@
                     return;
                 }
 
-                // Bilinmeyen komutlar
                 setLines(prev => [
                     ...prev, 
                     { 
@@ -494,7 +490,26 @@
                 >
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-50 opacity-[0.15]"></div>
                 
-                <div className="flex-1 overflow-y-auto pb-8 scrollbar-hide z-10 w-full">
+                <div className="flex-1 overflow-y-auto pb-8 scrollbar-hide z-10 w-full relative">
+                    
+                    {/* YENİ: 100% Okunabilir ve Gerçek CSS 3D Gölgeli Logo */}
+                    <div className="absolute top-0 right-2 lg:right-8 hidden md:block text-emerald-500 font-bold select-none opacity-90 pointer-events-none drop-shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                        <pre className="text-[10px] lg:text-xs leading-[1.1] font-mono whitespace-pre"
+                             style={{ textShadow: '1px 1px 0px #065f46, 2px 2px 0px #065f46, 3px 3px 0px #064e3b, 4px 4px 0px #064e3b' }}>{`
+ ____   ___  _   _ ___ _  __
+/ ___| / _ \\| \\ | |_ _| |/ /
+\\___ \\| | | |  \\| || || ' / 
+ ___) | |_| | |\\  || || . \\ 
+|____/ \\___/|_| \\_|___|_|\\_\\
+                            
+ ____  _   _ _____ ___ _  __
+| __ )| | | |_   _|_ _| |/ /
+|  _ \\| | | | | |  | || ' / 
+| |_) | |_| | | |  | || . \\ 
+|____/ \\___/  |_| |___|_|\\_\\
+                        `}</pre>
+                    </div>
+
                     {lines.map(line => <TerminalText key={line.id} line={line} onCommand={handleCommand} />)}
 
                     {!isBooting && (
